@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>情緒調解員</title>
+
+<style>
+    /* 字體設定 */
+    @font-face {
+        font-family: 'Iansui';
+        src: url('Iansui.ttf') format('truetype');
+        font-display: swap;
+    }
+
+    /* 全域設定 */
+    body {
+        font-family: 'Iansui', 'Heiti TC', sans-serif;
+        background-color: #FBF9F1; 
+        color: #5D4037; 
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        overflow: hidden;
+        user-select: none;
+    }
+
+    #app-container {
+        width: 100%;
+        max-width: 480px;
+        background-color: #FBF9F1;
+        position: relative;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* 頁面切換 */
+    .screen {
+        display: none;
+        width: 100%;
+        height: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start; /* 改為從上方開始排 */
+        padding-top: 60px; /* 上方留白 */
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.3s ease-in-out;
+        padding: 20px;
+        box-sizing: border-box;
+        background-color: #FBF9F1;
+        z-index: 1;
+        overflow-y: auto; /* 允許垂直捲動 (為了紀錄列表) */
+    }
+
+    /* 置中內容專用 (首頁、深呼吸、結果頁) */
+    .center-content {
+        justify-content: center; 
+        padding-top: 0;
+    }
+
+    .active {
+        display: flex !important;
+        opacity: 1;
+        z-index: 10;
+    }
+
+    /* 文字與按鈕 */
+    h2 { font-size: 1.8rem; margin-bottom: 20px; color: #5D4037; text-align: center; }
+    p { font-size: 1.2rem; color: #795548; text-align: center; margin-top: 10px; }
+    
+    .btn {
+        border: none;
+        border-radius: 50px;
+        padding: 15px 30px;
+        font-size: 1.1rem;
+        cursor: pointer;
+        margin-top: 15px;
+        font-family: inherit;
+        box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+    }
+    .btn:active { transform: translateY(4px); box-shadow: none; }
+    .btn-primary { background-color: #8D6E63; color: white; }
+    .btn-outline { background-color: transparent; border: 2px solid #8D6E63; color: #8D6E63; }
+    .btn-text { background: none; border: none; color: #8D6E63; font-size: 1rem; text-decoration: underline; box-shadow: none; }
+
+    /* 紅綠燈 */
+    .traffic-light-container {
+        display: flex; 
+        flex-direction: column; 
+        gap: 20px; width: 100%; max-width: 350px;
+    }
+    .light-btn-group {
+        display: flex; align-items: center; gap: 20px; cursor: pointer;
+        background: white; padding: 15px 25px; border-radius: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .traffic-light { width: 50px; height: 50px; border-radius: 50%; flex-shrink: 0; }
+    .bg-red { background-color: #FFAB91; }
+    .bg-yellow { background-color: #FFF59D; }
+    .bg-green { background-color: #A5D6A7; }
+    .text-group { text-align: left; }
+    .text-group h3 { margin: 0; font-size: 1.3rem; }
+    .text-group span { font-size: 0.95rem; color: #9E9E9E; }
+
+    /* 深呼吸 */
+    .breath-circle-outer { width: 260px; height: 260px; background: rgba(178, 235, 242, 0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .breath-circle { width: 120px; height: 120px; background: #80DEEA; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; }
+    .breathing { animation: breathAnim 8s infinite ease-in-out; }
+    @keyframes breathAnim {
+        0% { transform: scale(1); } 40% { transform: scale(2.0); } 50% { transform: scale(2.0); } 90% { transform: scale(1); } 100% { transform: scale(1); }
+    }
+
+    /* 樹洞輸入框 */
+    textarea {
+        width: 100%; height: 200px; border-radius: 20px; border: none; padding: 20px;
+        font-size: 1.2rem; background: #FFF; resize: none; margin-bottom: 20px;
+        font-family: inherit; box-sizing: border-box;
+    }
+
+    /* 紀錄列表樣式 */
+    .history-list {
+        width: 100%;
+        max-width: 400px;
+        margin-top: 10px;
+    }
+    .history-card {
+        background: white;
+        border-radius: 15px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border-left: 8px solid #ddd; /* 預設顏色 */
+    }
+    .card-red { border-left-color: #FFAB91; }
+    .card-yellow { border-left-color: #FFF59D; }
+    .card-green { border-left-color: #A5D6A7; }
+    
+    .history-time { font-size: 0.85rem; color: #999; margin-bottom: 5px; }
+    .history-mood { font-weight: bold; color: #5D4037; margin-bottom: 5px; font-size: 1.1rem;}
+    .history-text { font-size: 1rem; color: #666; white-space: pre-wrap; }
+
+    /* 載入中動畫 */
+    .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #8D6E63;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+        margin: 20px auto;
+        display: none;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+</style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <!-- 1. 首頁 -->
+    <div id="screen-home" class="screen center-content active">
+        <h2 style="font-size: 2.2rem; font-weight: bold;">情緒調解員</h2>
+        <p style="margin-bottom: 30px;">嘿！現在的感覺像什麼顏色？</p>
+
+        <div class="traffic-light-container">
+            <div class="light-btn-group" onclick="selectMood('紅燈', '#screen-breath')">
+                <div class="traffic-light bg-red"></div>
+                <div class="text-group"><h3>快要爆炸了</h3><span>生氣、難過</span></div>
+            </div>
+            <div class="light-btn-group" onclick="selectMood('黃燈', '#screen-breath')">
+                <div class="traffic-light bg-yellow"></div>
+                <div class="text-group"><h3>有一點點煩</h3><span>焦慮、混亂</span></div>
+            </div>
+            <div class="light-btn-group" onclick="selectMood('綠燈', '#screen-record')">
+                <div class="traffic-light bg-green"></div>
+                <div class="text-group"><h3>感覺很不錯</h3><span>平靜、開心</span></div>
+            </div>
+        </div>
+        
+        <!-- 新增：查看紀錄按鈕 -->
+        <button class="btn btn-text" style="margin-top: 40px;" onclick="loadHistory()">📖 查看心情日記</button>
+    </div>
+
+    <!-- 2. 降溫區 -->
+    <div id="screen-breath" class="screen center-content">
+        <h2 style="margin-bottom: 50px;">跟隨圓圈深呼吸</h2>
+        <div class="breath-circle-outer"><div id="breath-ball" class="breath-circle">吸氣</div></div>
+        <p id="breath-text" style="font-size: 1.5rem; margin-top: 40px; color: #0097A7;">慢慢吸氣...</p>
+        <div style="flex-grow: 1;"></div>
+        <button class="btn btn-primary" style="background-color: #0097A7; margin-bottom: 40px;" onclick="stopBreath(); navigate('#screen-record')">心情平靜了</button>
+    </div>
+
+    <!-- 3. 表達區 -->
+    <div id="screen-record" class="screen center-content">
+        <h2>心情樹洞</h2>
+        <p style="margin-bottom: 20px;">寫下你的想法，我會幫你存到雲端：</p>
+        <textarea id="mood-input" placeholder="剛剛發生了什麼事？我的感覺是..."></textarea>
+        <div style="display: flex; gap: 15px;">
+            <button class="btn btn-outline" onclick="navigate('#screen-home')">取消</button>
+            <button class="btn btn-primary" id="save-btn" onclick="saveMoodToCloud()">記錄下來</button>
+        </div>
+        <div id="save-loader" class="loader"></div> <!-- 儲存中的轉圈圈 -->
+    </div>
+
+    <!-- 4. 結尾 -->
+    <div id="screen-finish" class="screen center-content">
+        <div style="font-size: 6rem;">🏅</div>
+        <h2 style="margin-top: 10px;">儲存成功！</h2>
+        <p>你的心情已經被妥善保管了。</p>
+        <br><br>
+        <button class="btn btn-primary" onclick="navigate('#screen-home')">回到首頁</button>
+    </div>
+
+    <!-- 5. 新增：歷史紀錄頁 -->
+    <div id="screen-history" class="screen">
+        <h2>心情日記本</h2>
+        <div id="history-loader" class="loader" style="display: block;"></div>
+        <div id="history-container" class="history-list">
+            <!-- 這裡會由程式自動填入紀錄 -->
+        </div>
+        <button class="btn btn-outline" style="margin-bottom: 30px;" onclick="navigate('#screen-home')">關閉日記</button>
+    </div>
+
+</div>
+
+<script>
+    // ==========================================
+    // ⚠️ 請在這裡貼上你的 Apps Script 網址 ⚠️
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzGkt3Z18apZUZZKIm-7hlqu5NXg1hj8Cf-mwo5HYjSXWnv7pN9k3Ei76RB7uJhQa731Q/exec";
+    // ==========================================
+
+    let currentMood = "";
+    let breathInterval;
+
+    // 頁面切換
+    function navigate(screenId) {
+        document.querySelectorAll('.screen').forEach(el => {
+            el.style.display = 'none';
+            el.classList.remove('active');
+        });
+        const nextScreen = document.querySelector(screenId);
+        if (nextScreen) {
+            nextScreen.style.display = 'flex';
+            setTimeout(() => nextScreen.classList.add('active'), 50);
+        }
+    }
+
+    function selectMood(mood, nextScreen) {
+        currentMood = mood;
+        navigate(nextScreen);
+        if(nextScreen === '#screen-breath') setTimeout(startBreath, 100);
+    }
+
+    // 深呼吸邏輯 (維持不變)
+    function startBreath() {
+        const ball = document.getElementById('breath-ball');
+        const text = document.getElementById('breath-text');
+        stopBreath();
+        ball.classList.add('breathing');
+        text.innerText = "慢慢吸氣...";
+        ball.innerText = "吸";
+        const runCycle = () => {
+            setTimeout(() => { if(document.querySelector('#screen-breath').style.display !== 'none'){ text.innerText = "保持..."; ball.innerText = "停"; } }, 3200);
+            setTimeout(() => { if(document.querySelector('#screen-breath').style.display !== 'none'){ text.innerText = "慢慢吐氣..."; ball.innerText = "吐"; } }, 4000);
+            setTimeout(() => { if(document.querySelector('#screen-breath').style.display !== 'none'){ text.innerText = "慢慢吸氣..."; ball.innerText = "吸"; } }, 8000);
+        };
+        runCycle(); 
+        breathInterval = setInterval(runCycle, 8000);
+    }
+    function stopBreath() {
+        document.getElementById('breath-ball').classList.remove('breathing');
+        if (breathInterval) clearInterval(breathInterval);
+    }
+
+    // --- 雲端功能開始 ---
+
+    // 1. 儲存到 Google Sheets
+    function saveMoodToCloud() {
+        let input = document.getElementById('mood-input');
+        let text = input.value;
+        if(text.trim() === "") text = "(沒有文字記錄)";
+
+        // 顯示讀取動畫，禁用按鈕
+        document.getElementById('save-loader').style.display = 'block';
+        document.getElementById('save-btn').disabled = true;
+        document.getElementById('save-btn').innerText = "儲存中...";
+
+        // 準備傳送的資料
+        const data = {
+            mood: currentMood,
+            text: text
+        };
+
+        // 使用 fetch 發送 (no-cors 模式)
+        fetch(GOOGLE_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors', // 重要：允許跨域傳送
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(() => {
+            // 因為是 no-cors，我們假設發送出去就成功了
+            document.getElementById('save-loader').style.display = 'none';
+            document.getElementById('save-btn').disabled = false;
+            document.getElementById('save-btn').innerText = "記錄下來";
+            input.value = "";
+            navigate('#screen-finish');
+        }).catch(err => {
+            alert("儲存失敗，請檢查網路連線");
+            console.error(err);
+            document.getElementById('save-loader').style.display = 'none';
+            document.getElementById('save-btn').disabled = false;
+        });
+    }
+
+    // 2. 讀取歷史紀錄
+    function loadHistory() {
+        navigate('#screen-history');
+        const container = document.getElementById('history-container');
+        const loader = document.getElementById('history-loader');
+        
+        container.innerHTML = ""; // 清空舊的
+        loader.style.display = 'block';
+
+        fetch(GOOGLE_SCRIPT_URL)
+        .then(response => response.json())
+        .then(data => {
+            loader.style.display = 'none';
+            
+            // 資料反轉，讓最新的顯示在最上面
+            data.reverse();
+
+            if (data.length === 0) {
+                container.innerHTML = "<p>目前還沒有紀錄喔！</p>";
+                return;
+            }
+
+            data.forEach(row => {
+                // row[0]=時間, row[1]=心情, row[2]=內容
+                // 處理時間顯示
+                let date = new Date(row[0]);
+                let timeStr = date.toLocaleString('zh-TW', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' });
+                
+                // 決定卡片顏色
+                let cardClass = "";
+                if(row[1] === "紅燈") cardClass = "card-red";
+                else if(row[1] === "黃燈") cardClass = "card-yellow";
+                else cardClass = "card-green";
+
+                // 建立卡片 HTML
+                const card = document.createElement('div');
+                card.className = `history-card ${cardClass}`;
+                card.innerHTML = `
+                    <div class="history-time">${timeStr}</div>
+                    <div class="history-mood">${row[1]}</div>
+                    <div class="history-text">${row[2]}</div>
+                `;
+                container.appendChild(card);
+            });
+        })
+        .catch(err => {
+            loader.style.display = 'none';
+            container.innerHTML = "<p>無法讀取資料，請檢查網路或網址設定。</p>";
+            console.error(err);
+        });
+    }
+
+</script>
+
+</body>
+</html>
