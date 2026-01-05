@@ -273,15 +273,15 @@
 <script>
     // ==========================================
     // ⚠️ 請填入你的 Google Script 網址 ⚠️
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbycdwZ-gLfK5xQEIR6olT2yGQE917MgcE2NZUixqvtvmN4Slhdiwu47wxvNNgblOGKi/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjUpIzVX5Y0TrvmI-WvzIklA381qu9q0w3r5CUfVzhLG-WUYrhrhzzd0j1yOGor-77Jw/exec";
     // ==========================================
 
-    let currentMood = "";
+        let currentMood = "";
     let breathInterval;
     let recognition;
     let isRecording = false;
     let isMusicPlaying = false;
-    let hasDrawn = false; // 紀錄是否有畫畫
+    let hasDrawn = false; // 追蹤是否有畫畫
 
     // 頁面切換
     function navigate(screenId) {
@@ -302,7 +302,7 @@
         if(nextScreen === '#screen-breath') setTimeout(startBreath, 100);
     }
 
-    // --- 第三步：表達區功能 ---
+    // Tab 切換
     function switchTab(type) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
         document.querySelectorAll('.input-area').forEach(a => a.classList.remove('show'));
@@ -313,48 +313,43 @@
         } else {
             document.querySelectorAll('.tab-btn')[1].classList.add('active-tab');
             document.getElementById('area-draw').classList.add('show');
-            initCanvas(); // 初始化畫布
+            initCanvas();
         }
     }
 
     // 語音辨識
     function toggleRecording() {
         if (!('webkitSpeechRecognition' in window)) {
-            alert("抱歉，你的瀏覽器不支援語音辨識 (請使用 Chrome)");
+            alert("請使用 Chrome 瀏覽器以支援語音辨識");
             return;
         }
         if (isRecording) {
             recognition.stop();
             return;
         }
-
         recognition = new webkitSpeechRecognition();
         recognition.lang = "zh-TW";
         recognition.continuous = false;
         recognition.interimResults = false;
-
         recognition.onstart = function() {
             isRecording = true;
             document.getElementById('mic-btn').classList.add('mic-listening');
             document.getElementById('mic-status').innerText = "聆聽中...";
         };
-
         recognition.onend = function() {
             isRecording = false;
             document.getElementById('mic-btn').classList.remove('mic-listening');
             document.getElementById('mic-status').innerText = "點擊錄音";
         };
-
         recognition.onresult = function(event) {
             const transcript = event.results[0][0].transcript;
             const textarea = document.getElementById('mood-input');
             textarea.value += (textarea.value ? "\n" : "") + transcript;
         };
-
         recognition.start();
     }
 
-    // 塗鴉板邏輯
+    // 塗鴉板
     let canvas, ctx, isDrawing = false;
     function initCanvas() {
         canvas = document.getElementById('draw-canvas');
@@ -364,27 +359,24 @@
         ctx.lineWidth = 5;
         ctx.strokeStyle = '#5D4037';
         
-        // 修正 Canvas 尺寸以支援高解析度螢幕
-        // 這裡簡化處理，直接監聽事件
+        // 修正：如果之前沒畫過，才設定白色背景，不然會變透明
+        if(!hasDrawn) {
+            ctx.fillStyle = "white";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
         
-        // 觸控事件
         canvas.addEventListener('touchstart', startDraw, {passive: false});
         canvas.addEventListener('touchmove', draw, {passive: false});
         canvas.addEventListener('touchend', stopDraw);
-        // 滑鼠事件
         canvas.addEventListener('mousedown', startDraw);
         canvas.addEventListener('mousemove', draw);
         canvas.addEventListener('mouseup', stopDraw);
     }
-
     function getPos(e) {
         const rect = canvas.getBoundingClientRect();
-        if(e.touches) {
-            return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
-        }
+        if(e.touches) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
         return { x: e.clientX - rect.left, y: e.clientY - rect.top };
     }
-
     function startDraw(e) {
         e.preventDefault();
         isDrawing = true;
@@ -393,7 +385,6 @@
         ctx.beginPath();
         ctx.moveTo(pos.x, pos.y);
     }
-
     function draw(e) {
         if(!isDrawing) return;
         e.preventDefault();
@@ -401,13 +392,15 @@
         ctx.lineTo(pos.x, pos.y);
         ctx.stroke();
     }
-
     function stopDraw() { isDrawing = false; }
     function setColor(c) { ctx.strokeStyle = c; }
-    function clearCanvas() { ctx.clearRect(0,0,canvas.width, canvas.height); hasDrawn = false; }
+    function clearCanvas() { 
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        hasDrawn = false; 
+    }
 
-
-    // --- 第四步：急救包功能 ---
+    // 行動區
     function toggleMusic(card) {
         const audio = document.getElementById('bg-music');
         const label = card.querySelector('.kit-label');
@@ -429,31 +422,18 @@
         audio.currentTime = 0;
         isMusicPlaying = false;
     }
-
     function openStressBall() { navigate('#screen-ball'); }
     function squeezeBall() {
-        const ball = document.getElementById('stress-ball');
-        ball.style.transform = "scale(0.8)";
-        if(navigator.vibrate) navigator.vibrate(50); // 手機震動
+        document.getElementById('stress-ball').style.transform = "scale(0.8)";
+        if(navigator.vibrate) navigator.vibrate(50);
     }
-    function releaseBall() {
-        const ball = document.getElementById('stress-ball');
-        ball.style.transform = "scale(1)";
-    }
-
-    const jokes = [
-        "你知道海豚為什麼會跳出水面嗎？\n因為牠們想看海鷗！",
-        "冷知識：你沒辦法同時用鼻子吸氣又用嘴巴發出「哼」的聲音。",
-        "為什麼電腦很冷？\n因為它有 Windows (視窗/風)",
-        "小明問路：請問去圖書館怎麼走？\n路人：安靜地走。",
-        "心理學小知識：深呼吸 3 次可以有效降低 40% 的焦慮感喔！"
-    ];
+    function releaseBall() { document.getElementById('stress-ball').style.transform = "scale(1)"; }
     function showJoke() {
-        const randomJoke = jokes[Math.floor(Math.random() * jokes.length)];
-        alert(randomJoke);
+        const jokes = ["你知道海豚為什麼會跳出水面嗎？\n因為牠們想看海鷗！", "心理學小知識：深呼吸 3 次可以有效降低 40% 的焦慮感喔！", "為什麼電腦很冷？\n因為它有 Windows (視窗/風)"];
+        alert(jokes[Math.floor(Math.random() * jokes.length)]);
     }
 
-    // --- 深呼吸邏輯 (不變) ---
+    // 深呼吸
     function startBreath() {
         const ball = document.getElementById('breath-ball');
         const text = document.getElementById('breath-text');
@@ -474,18 +454,29 @@
         if (breathInterval) clearInterval(breathInterval);
     }
 
-    // --- 儲存與歷史紀錄 ---
+    // === 雲端功能 (更新版：支援圖片) ===
     function saveMoodToCloud() {
         let text = document.getElementById('mood-input').value;
-        if(text.trim() === "") text = "(沒有文字記錄)";
-        if(hasDrawn) text += "\n[附註：這天我畫了一張圖]";
-
+        if(text.trim() === "" && !hasDrawn) text = "(沒有文字記錄)";
+        
         const btn = document.getElementById('save-btn');
         const loader = document.getElementById('save-loader');
         loader.style.display = 'block';
         btn.disabled = true;
 
-        const data = { action: 'save', mood: currentMood, text: text };
+        // 準備資料
+        const data = {
+            action: 'save',
+            mood: currentMood,
+            text: text,
+            image: null
+        };
+
+        // 如果有畫畫，將圖片轉為 JPG 格式的 Base64 字串
+        if (hasDrawn && canvas) {
+            // 0.5 品質壓縮，避免傳輸失敗
+            data.image = canvas.toDataURL('image/jpeg', 0.5); 
+        }
 
         fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
@@ -496,10 +487,11 @@
             loader.style.display = 'none';
             btn.disabled = false;
             document.getElementById('mood-input').value = "";
-            clearCanvas();
-            navigate('#screen-action'); // 存完後跳轉到急救包
+            if(canvas) clearCanvas();
+            navigate('#screen-action'); 
         }).catch(err => {
-            alert("儲存失敗");
+            alert("儲存失敗，請檢查網路");
+            console.error(err);
             btn.disabled = false;
         });
     }
@@ -520,7 +512,14 @@
                 let cardClass = row[1] === "紅燈" ? "card-red" : row[1] === "黃燈" ? "card-yellow" : "card-green";
                 const card = document.createElement('div');
                 card.className = `history-card ${cardClass}`;
-                card.innerHTML = `<div class="history-time">${timeStr}</div><div class="history-mood">${row[1]}</div><div class="history-text">${row[2]}</div><button class="delete-btn" onclick="deleteHistory('${row[0]}', this)">刪除</button>`;
+                
+                // row[2] 裡面現在可能包含 <img src="..."> 的 HTML，直接顯示即可
+                card.innerHTML = `
+                    <div class="history-time">${timeStr}</div>
+                    <div class="history-mood">${row[1]}</div>
+                    <div class="history-text">${row[2]}</div>
+                    <button class="delete-btn" onclick="deleteHistory('${row[0]}', this)">刪除</button>
+                `;
                 container.appendChild(card);
             });
         }).catch(err => { loader.style.display = 'none'; container.innerHTML = "<p>讀取失敗</p>"; });
