@@ -37,7 +37,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        /* 讓內容置中，但允許長內容捲動 */
         overflow-y: auto; 
     }
 
@@ -45,7 +44,7 @@
     .screen {
         display: none;
         width: 100%;
-        min-height: 100%; /* 確保填滿 */
+        min-height: 100%;
         flex-direction: column;
         align-items: center;
         justify-content: flex-start;
@@ -74,6 +73,13 @@
     .btn:active { transform: translateY(3px); box-shadow: none; }
     .btn-primary { background-color: #8D6E63; color: white; }
     .btn-outline { background-color: transparent; border: 2px solid #8D6E63; color: #8D6E63; }
+    
+    /* 首頁按鈕群組 */
+    .home-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 30px;
+    }
 
     /* 紅綠燈 */
     .traffic-light-container { display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 350px; margin-top: 20px; }
@@ -88,44 +94,52 @@
     .breathing { animation: breathAnim 8s infinite ease-in-out; }
     @keyframes breathAnim { 0% {transform: scale(1);} 40% {transform: scale(2.0);} 50% {transform: scale(2.0);} 90% {transform: scale(1);} 100% {transform: scale(1);} }
 
-    /* === 第三步：表達區 (Tab 切換) === */
+    /* 表達區 */
     .tab-container { display: flex; gap: 10px; margin-bottom: 15px; }
     .tab-btn { padding: 8px 20px; border-radius: 20px; border: 1px solid #8D6E63; background: transparent; color: #8D6E63; cursor: pointer; }
     .tab-btn.active-tab { background: #8D6E63; color: white; }
-    
     .input-area { width: 90%; display: none; flex-direction: column; align-items: center; }
     .input-area.show { display: flex; }
-
-    /* 錄音按鈕 */
     .mic-btn { width: 60px; height: 60px; border-radius: 50%; background: #FFCC80; border: none; font-size: 1.5rem; color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.1); cursor: pointer; margin: 10px 0; display: flex; align-items: center; justify-content: center; }
     .mic-listening { animation: pulse 1.5s infinite; background: #FF7043; }
     @keyframes pulse { 0% {box-shadow: 0 0 0 0 rgba(255, 112, 67, 0.7);} 70% {box-shadow: 0 0 0 15px rgba(255, 112, 67, 0);} 100% {box-shadow: 0 0 0 0 rgba(255, 112, 67, 0);} }
-
     textarea { width: 100%; height: 150px; border-radius: 20px; border: 2px solid #E0E0E0; padding: 15px; font-size: 1.1rem; resize: none; font-family: inherit; box-sizing: border-box; }
-    
-    /* 塗鴉板 */
     canvas { background: white; border-radius: 20px; border: 2px solid #E0E0E0; touch-action: none; cursor: crosshair; }
     .color-picker { display: flex; gap: 10px; margin-top: 10px; }
     .color-dot { width: 30px; height: 30px; border-radius: 50%; border: 2px solid white; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer; }
     
-    /* === 第四步：急救包 === */
+    /* 急救包 */
     .kit-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; width: 95%; margin-top: 30px; }
     .kit-card { background: white; border-radius: 15px; padding: 15px 5px; display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; transition: transform 0.1s; text-align: center; height: 110px; justify-content: center; }
     .kit-card:active { transform: scale(0.95); }
     .kit-icon { font-size: 2.5rem; margin-bottom: 10px; }
     .kit-label { font-size: 0.9rem; color: #5D4037; font-weight: bold; }
-
-    /* 舒壓球特效 */
     #stress-ball { width: 150px; height: 150px; background: radial-gradient(circle at 30% 30%, #FFAB91, #FF7043); border-radius: 50%; box-shadow: 0 10px 20px rgba(0,0,0,0.2); margin: 30px auto; transition: transform 0.1s; cursor: pointer; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.8); font-size: 1.2rem; }
-    #stress-ball:active { transform: scale(0.85); }
 
-    /* 歷史紀錄列表 */
+    /* 歷史紀錄與月曆 */
     .history-list { width: 90%; max-width: 400px; margin-top: 10px; padding-bottom: 50px; }
     .history-card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-left: 8px solid #ddd; position: relative; }
     .card-red { border-left-color: #FFAB91; } .card-yellow { border-left-color: #FFF59D; } .card-green { border-left-color: #A5D6A7; }
     .history-time { font-size: 0.85rem; color: #999; } .history-mood { font-weight: bold; font-size: 1.1rem; margin: 5px 0; } .history-text { color: #666; white-space: pre-wrap; }
     .delete-btn { position: absolute; right: 15px; top: 15px; background: none; border: 1px solid #FF8A80; color: #FF8A80; border-radius: 15px; padding: 2px 10px; font-size: 0.8rem; cursor: pointer; }
 
+    /* === 月曆專用樣式 === */
+    .calendar-container { width: 90%; max-width: 400px; background: white; padding: 15px; border-radius: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .cal-header h3 { margin: 0; color: #5D4037; }
+    .cal-nav { background: #8D6E63; color: white; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; }
+    
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; text-align: center; }
+    .cal-day-name { font-size: 0.9rem; color: #999; padding-bottom: 10px; }
+    .cal-day { height: 50px; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 5px; border-radius: 10px; font-size: 0.9rem; color: #555; position: relative; }
+    .cal-dots { display: flex; gap: 3px; margin-top: 3px; flex-wrap: wrap; justify-content: center; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .dot-r { background: #FFAB91; } .dot-y { background: #FFF59D; } .dot-g { background: #A5D6A7; }
+    
+    .cal-stats { display: flex; justify-content: space-around; width: 100%; margin-top: 20px; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .stat-item { text-align: center; }
+    .stat-num { font-size: 1.5rem; font-weight: bold; display: block; }
+    
     /* 載入動畫 */
     .loader { border: 4px solid #f3f3f3; border-top: 4px solid #8D6E63; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; margin: 10px auto; display: none; }
     @keyframes spin { 0% {transform: rotate(0deg);} 100% {transform: rotate(360deg);} }
@@ -134,7 +148,7 @@
 </head>
 <body>
 
-<!-- 隱藏的音效檔 (使用免費授權的輕音樂連結) -->
+<!-- 隱藏的音效檔 -->
 <audio id="bg-music" loop>
     <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=relaxing-mountains-141205.mp3" type="audio/mpeg">
 </audio>
@@ -160,7 +174,11 @@
                 <div class="text-group"><h3>感覺很不錯</h3><span>平靜、開心</span></div>
             </div>
         </div>
-        <button class="btn btn-outline" style="border:none; margin-top:30px;" onclick="loadHistory()">📖 查看心情日記</button>
+        
+        <div class="home-actions">
+            <button class="btn btn-outline" style="border:1px solid #8D6E63; padding: 10px 15px; font-size: 1rem;" onclick="loadHistory()">📖 心情日記</button>
+            <button class="btn btn-outline" style="border:1px solid #8D6E63; padding: 10px 15px; font-size: 1rem;" onclick="loadCalendar()">📅 心情月曆</button>
+        </div>
     </div>
 
     <!-- 2. 降溫區 -->
@@ -172,26 +190,19 @@
         <button class="btn btn-primary" style="background-color: #0097A7; margin-bottom: 40px;" onclick="stopBreath(); navigate('#screen-express')">心情平靜了</button>
     </div>
 
-    <!-- 3. 表達區 (升級版) -->
+    <!-- 3. 表達區 -->
     <div id="screen-express" class="screen center-content">
         <h2>心情樹洞</h2>
         <p>選擇你喜歡的方式記錄心情：</p>
-        
         <div class="tab-container">
             <button class="tab-btn active-tab" onclick="switchTab('write')">寫字/錄音</button>
             <button class="tab-btn" onclick="switchTab('draw')">塗鴉畫畫</button>
         </div>
-
-        <!-- 文字與錄音區 -->
         <div id="area-write" class="input-area show">
             <textarea id="mood-input" placeholder="發生了什麼事？點擊下方麥克風也可以用說的喔..."></textarea>
-            <button id="mic-btn" class="mic-btn" onclick="toggleRecording()">
-                🎤
-            </button>
+            <button id="mic-btn" class="mic-btn" onclick="toggleRecording()">🎤</button>
             <p id="mic-status" style="font-size:0.9rem; color:#999;">點擊錄音</p>
         </div>
-
-        <!-- 塗鴉區 -->
         <div id="area-draw" class="input-area">
             <canvas id="draw-canvas" width="300" height="300"></canvas>
             <div class="color-picker">
@@ -202,50 +213,30 @@
                 <button class="btn-outline" style="padding: 2px 10px; font-size:0.8rem; margin:0;" onclick="clearCanvas()">清除</button>
             </div>
         </div>
-
         <div style="display: flex; gap: 15px; margin-top:20px;">
             <button class="btn btn-primary" id="save-btn" onclick="saveMoodToCloud()">記錄並繼續</button>
         </div>
         <div id="save-loader" class="loader"></div>
     </div>
 
-    <!-- 4. 行動區 (新增：情緒急救包) -->
+    <!-- 4. 行動區 -->
     <div id="screen-action" class="screen center-content">
         <h2>情緒急救包</h2>
-        <p>在離開前，選一個讓自己更開心的方法：</p>
-
+        <p>選一個讓自己更開心的方法：</p>
         <div class="kit-grid">
-            <!-- 音樂 -->
-            <div class="kit-card" onclick="toggleMusic(this)">
-                <div class="kit-icon">🎧</div>
-                <div class="kit-label">聽輕音樂</div>
-            </div>
-            <!-- 舒壓球 -->
-            <div class="kit-card" onclick="openStressBall()">
-                <div class="kit-icon">🔴</div>
-                <div class="kit-label">捏捏舒壓球</div>
-            </div>
-            <!-- 笑話 -->
-            <div class="kit-card" onclick="showJoke()">
-                <div class="kit-icon">💡</div>
-                <div class="kit-label">看冷知識</div>
-            </div>
+            <div class="kit-card" onclick="toggleMusic(this)"><div class="kit-icon">🎧</div><div class="kit-label">聽輕音樂</div></div>
+            <div class="kit-card" onclick="openStressBall()"><div class="kit-icon">🔴</div><div class="kit-label">捏捏舒壓球</div></div>
+            <div class="kit-card" onclick="showJoke()"><div class="kit-icon">💡</div><div class="kit-label">看冷知識</div></div>
         </div>
-
         <div style="flex-grow: 1;"></div>
         <button class="btn btn-outline" onclick="navigate('#screen-finish')">我準備好了</button>
         <br><br>
     </div>
 
-    <!-- 4.1 舒壓球專屬頁面 -->
+    <!-- 4.1 舒壓球 -->
     <div id="screen-ball" class="screen center-content" style="background-color: #FFF3E0;">
         <h2>盡情釋放壓力</h2>
-        <p>用力點擊這顆球！</p>
-        
-        <div id="stress-ball" onmousedown="squeezeBall()" ontouchstart="squeezeBall()" onmouseup="releaseBall()" ontouchend="releaseBall()">
-            捏我
-        </div>
-
+        <div id="stress-ball" onmousedown="squeezeBall()" ontouchstart="squeezeBall()" onmouseup="releaseBall()" ontouchend="releaseBall()">捏我</div>
         <div style="flex-grow: 1;"></div>
         <button class="btn btn-outline" onclick="navigate('#screen-action')">回到急救包</button>
         <br><br>
@@ -268,6 +259,51 @@
         <button class="btn btn-outline" style="margin-bottom: 30px;" onclick="navigate('#screen-home')">關閉</button>
     </div>
 
+    <!-- 7. 心情月曆 (新增) -->
+    <div id="screen-calendar" class="screen">
+        <h2>心情月曆</h2>
+        <div id="cal-loader" class="loader"></div>
+        
+        <div class="calendar-container">
+            <div class="cal-header">
+                <button class="cal-nav" onclick="changeMonth(-1)">&#8249;</button>
+                <h3 id="cal-month-title">2026年 1月</h3>
+                <button class="cal-nav" onclick="changeMonth(1)">&#8250;</button>
+            </div>
+            
+            <div class="cal-grid">
+                <div class="cal-day-name">日</div>
+                <div class="cal-day-name">一</div>
+                <div class="cal-day-name">二</div>
+                <div class="cal-day-name">三</div>
+                <div class="cal-day-name">四</div>
+                <div class="cal-day-name">五</div>
+                <div class="cal-day-name">六</div>
+                <!-- 日期會由 JS 動態填入 -->
+            </div>
+            <div id="cal-days" class="cal-grid"></div>
+        </div>
+
+        <!-- 統計區 -->
+        <div class="cal-stats">
+            <div class="stat-item">
+                <span class="stat-num" style="color:#FFAB91" id="stat-red">0</span>
+                <span style="font-size:0.8rem">紅燈</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num" style="color:#FBC02D" id="stat-yellow">0</span>
+                <span style="font-size:0.8rem">黃燈</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num" style="color:#81C784" id="stat-green">0</span>
+                <span style="font-size:0.8rem">綠燈</span>
+            </div>
+        </div>
+
+        <div style="flex-grow: 1;"></div>
+        <button class="btn btn-outline" style="margin-bottom: 30px;" onclick="navigate('#screen-home')">關閉</button>
+    </div>
+
 </div>
 
 <script>
@@ -276,12 +312,16 @@
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzjUpIzVX5Y0TrvmI-WvzIklA381qu9q0w3r5CUfVzhLG-WUYrhrhzzd0j1yOGor-77Jw/exec";
     // ==========================================
 
-        let currentMood = "";
+    let currentMood = "";
     let breathInterval;
     let recognition;
     let isRecording = false;
     let isMusicPlaying = false;
-    let hasDrawn = false; // 追蹤是否有畫畫
+    let hasDrawn = false; 
+
+    // 月曆變數
+    let currentCalDate = new Date(); // 當前查看的月份
+    let cachedData = []; // 快取下載的資料，避免切換月份時重複下載
 
     // 頁面切換
     function navigate(screenId) {
@@ -306,7 +346,6 @@
     function switchTab(type) {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
         document.querySelectorAll('.input-area').forEach(a => a.classList.remove('show'));
-        
         if(type === 'write') {
             document.querySelectorAll('.tab-btn')[0].classList.add('active-tab');
             document.getElementById('area-write').classList.add('show');
@@ -319,32 +358,17 @@
 
     // 語音辨識
     function toggleRecording() {
-        if (!('webkitSpeechRecognition' in window)) {
-            alert("請使用 Chrome 瀏覽器以支援語音辨識");
-            return;
-        }
-        if (isRecording) {
-            recognition.stop();
-            return;
-        }
+        if (!('webkitSpeechRecognition' in window)) { alert("請使用 Chrome 瀏覽器"); return; }
+        if (isRecording) { recognition.stop(); return; }
         recognition = new webkitSpeechRecognition();
         recognition.lang = "zh-TW";
         recognition.continuous = false;
-        recognition.interimResults = false;
-        recognition.onstart = function() {
-            isRecording = true;
-            document.getElementById('mic-btn').classList.add('mic-listening');
-            document.getElementById('mic-status').innerText = "聆聽中...";
-        };
-        recognition.onend = function() {
-            isRecording = false;
-            document.getElementById('mic-btn').classList.remove('mic-listening');
-            document.getElementById('mic-status').innerText = "點擊錄音";
-        };
+        recognition.onstart = function() { isRecording = true; document.getElementById('mic-btn').classList.add('mic-listening'); document.getElementById('mic-status').innerText = "聆聽中..."; };
+        recognition.onend = function() { isRecording = false; document.getElementById('mic-btn').classList.remove('mic-listening'); document.getElementById('mic-status').innerText = "點擊錄音"; };
         recognition.onresult = function(event) {
-            const transcript = event.results[0][0].transcript;
-            const textarea = document.getElementById('mood-input');
-            textarea.value += (textarea.value ? "\n" : "") + transcript;
+            const t = event.results[0][0].transcript;
+            const ta = document.getElementById('mood-input');
+            ta.value += (ta.value ? "\n" : "") + t;
         };
         recognition.start();
     }
@@ -354,187 +378,168 @@
     function initCanvas() {
         canvas = document.getElementById('draw-canvas');
         ctx = canvas.getContext('2d');
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.lineWidth = 5;
-        ctx.strokeStyle = '#5D4037';
-        
-        // 修正：如果之前沒畫過，才設定白色背景，不然會變透明
-        if(!hasDrawn) {
-            ctx.fillStyle = "white";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-        
-        canvas.addEventListener('touchstart', startDraw, {passive: false});
-        canvas.addEventListener('touchmove', draw, {passive: false});
-        canvas.addEventListener('touchend', stopDraw);
-        canvas.addEventListener('mousedown', startDraw);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDraw);
+        ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.lineWidth = 5; ctx.strokeStyle = '#5D4037';
+        if(!hasDrawn) { ctx.fillStyle = "white"; ctx.fillRect(0, 0, canvas.width, canvas.height); }
+        canvas.addEventListener('touchstart', startDraw, {passive: false}); canvas.addEventListener('touchmove', draw, {passive: false}); canvas.addEventListener('touchend', stopDraw);
+        canvas.addEventListener('mousedown', startDraw); canvas.addEventListener('mousemove', draw); canvas.addEventListener('mouseup', stopDraw);
     }
-    function getPos(e) {
-        const rect = canvas.getBoundingClientRect();
-        if(e.touches) return { x: e.touches[0].clientX - rect.left, y: e.touches[0].clientY - rect.top };
-        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-    }
-    function startDraw(e) {
-        e.preventDefault();
-        isDrawing = true;
-        hasDrawn = true;
-        const pos = getPos(e);
-        ctx.beginPath();
-        ctx.moveTo(pos.x, pos.y);
-    }
-    function draw(e) {
-        if(!isDrawing) return;
-        e.preventDefault();
-        const pos = getPos(e);
-        ctx.lineTo(pos.x, pos.y);
-        ctx.stroke();
-    }
+    function getPos(e) { const r = canvas.getBoundingClientRect(); if(e.touches) return { x: e.touches[0].clientX - r.left, y: e.touches[0].clientY - r.top }; return { x: e.clientX - r.left, y: e.clientY - r.top }; }
+    function startDraw(e) { e.preventDefault(); isDrawing = true; hasDrawn = true; const p = getPos(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); }
+    function draw(e) { if(!isDrawing) return; e.preventDefault(); const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }
     function stopDraw() { isDrawing = false; }
     function setColor(c) { ctx.strokeStyle = c; }
-    function clearCanvas() { 
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        hasDrawn = false; 
-    }
+    function clearCanvas() { ctx.fillStyle = "white"; ctx.fillRect(0, 0, canvas.width, canvas.height); hasDrawn = false; }
 
     // 行動區
     function toggleMusic(card) {
         const audio = document.getElementById('bg-music');
         const label = card.querySelector('.kit-label');
-        if(isMusicPlaying) {
-            audio.pause();
-            isMusicPlaying = false;
-            card.style.background = "white";
-            label.innerText = "聽輕音樂";
-        } else {
-            audio.play().catch(e => alert("請先與頁面互動才能播放音樂"));
-            isMusicPlaying = true;
-            card.style.background = "#E0F2F1";
-            label.innerText = "播放中...";
-        }
+        if(isMusicPlaying) { audio.pause(); isMusicPlaying = false; card.style.background = "white"; label.innerText = "聽輕音樂"; }
+        else { audio.play().catch(e=>alert("請互動")); isMusicPlaying = true; card.style.background = "#E0F2F1"; label.innerText = "播放中..."; }
     }
-    function stopMusic() {
-        const audio = document.getElementById('bg-music');
-        audio.pause();
-        audio.currentTime = 0;
-        isMusicPlaying = false;
-    }
+    function stopMusic() { const audio = document.getElementById('bg-music'); audio.pause(); audio.currentTime = 0; isMusicPlaying = false; }
     function openStressBall() { navigate('#screen-ball'); }
-    function squeezeBall() {
-        document.getElementById('stress-ball').style.transform = "scale(0.8)";
-        if(navigator.vibrate) navigator.vibrate(50);
-    }
+    function squeezeBall() { document.getElementById('stress-ball').style.transform = "scale(0.8)"; if(navigator.vibrate) navigator.vibrate(50); }
     function releaseBall() { document.getElementById('stress-ball').style.transform = "scale(1)"; }
-    function showJoke() {
-        const jokes = ["你知道海豚為什麼會跳出水面嗎？\n因為牠們想看海鷗！", "心理學小知識：深呼吸 3 次可以有效降低 40% 的焦慮感喔！", "為什麼電腦很冷？\n因為它有 Windows (視窗/風)"];
-        alert(jokes[Math.floor(Math.random() * jokes.length)]);
-    }
+    function showJoke() { const j = ["你知道海豚為什麼會跳出水面嗎？\n因為牠們想看海鷗！", "心理學小知識：深呼吸 3 次可以有效降低 40% 的焦慮感喔！", "為什麼電腦很冷？\n因為它有 Windows"]; alert(j[Math.floor(Math.random()*j.length)]); }
 
     // 深呼吸
     function startBreath() {
-        const ball = document.getElementById('breath-ball');
-        const text = document.getElementById('breath-text');
-        stopBreath();
-        ball.classList.add('breathing');
-        text.innerText = "慢慢吸氣...";
-        ball.innerText = "吸";
-        const runCycle = () => {
+        const ball = document.getElementById('breath-ball'); const text = document.getElementById('breath-text');
+        stopBreath(); ball.classList.add('breathing'); text.innerText = "慢慢吸氣..."; ball.innerText = "吸";
+        const run = () => {
             setTimeout(() => { if(document.querySelector('#screen-breath').style.display !== 'none'){ text.innerText = "保持..."; ball.innerText = "停"; } }, 3200);
             setTimeout(() => { if(document.querySelector('#screen-breath').style.display !== 'none'){ text.innerText = "慢慢吐氣..."; ball.innerText = "吐"; } }, 4000);
             setTimeout(() => { if(document.querySelector('#screen-breath').style.display !== 'none'){ text.innerText = "慢慢吸氣..."; ball.innerText = "吸"; } }, 8000);
         };
-        runCycle(); 
-        breathInterval = setInterval(runCycle, 8000);
+        run(); breathInterval = setInterval(run, 8000);
     }
-    function stopBreath() {
-        document.getElementById('breath-ball').classList.remove('breathing');
-        if (breathInterval) clearInterval(breathInterval);
-    }
+    function stopBreath() { document.getElementById('breath-ball').classList.remove('breathing'); if(breathInterval) clearInterval(breathInterval); }
 
-    // === 雲端功能 (更新版：支援圖片) ===
+    // 儲存
     function saveMoodToCloud() {
         let text = document.getElementById('mood-input').value;
         if(text.trim() === "" && !hasDrawn) text = "(沒有文字記錄)";
-        
-        const btn = document.getElementById('save-btn');
-        const loader = document.getElementById('save-loader');
-        loader.style.display = 'block';
-        btn.disabled = true;
-
-        // 準備資料
-        const data = {
-            action: 'save',
-            mood: currentMood,
-            text: text,
-            image: null
-        };
-
-        // 如果有畫畫，將圖片轉為 JPG 格式的 Base64 字串
-        if (hasDrawn && canvas) {
-            // 0.5 品質壓縮，避免傳輸失敗
-            data.image = canvas.toDataURL('image/jpeg', 0.5); 
-        }
-
-        fetch(GOOGLE_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        }).then(() => {
-            loader.style.display = 'none';
-            btn.disabled = false;
-            document.getElementById('mood-input').value = "";
-            if(canvas) clearCanvas();
-            navigate('#screen-action'); 
-        }).catch(err => {
-            alert("儲存失敗，請檢查網路");
-            console.error(err);
-            btn.disabled = false;
-        });
+        const btn = document.getElementById('save-btn'); const loader = document.getElementById('save-loader');
+        loader.style.display = 'block'; btn.disabled = true;
+        const data = { action: 'save', mood: currentMood, text: text, image: null };
+        if (hasDrawn && canvas) data.image = canvas.toDataURL('image/jpeg', 0.5);
+        fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
+        .then(() => { loader.style.display = 'none'; btn.disabled = false; document.getElementById('mood-input').value = ""; if(canvas) clearCanvas(); navigate('#screen-action'); cachedData = []; }) // 清空快取以強制重整
+        .catch(err => { alert("儲存失敗"); btn.disabled = false; });
     }
 
+    // 讀取歷史
     function loadHistory() {
         navigate('#screen-history');
-        const container = document.getElementById('history-container');
-        const loader = document.getElementById('history-loader');
-        container.innerHTML = "";
-        loader.style.display = 'block';
-
+        const container = document.getElementById('history-container'); const loader = document.getElementById('history-loader');
+        container.innerHTML = ""; loader.style.display = 'block';
         fetch(GOOGLE_SCRIPT_URL).then(res => res.json()).then(data => {
-            loader.style.display = 'none';
+            loader.style.display = 'none'; cachedData = data; // 更新快取
             data.reverse();
             if (data.length === 0) { container.innerHTML = "<p>無紀錄</p>"; return; }
             data.forEach(row => {
                 let timeStr = new Date(row[0]).toLocaleString('zh-TW', { month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit' });
                 let cardClass = row[1] === "紅燈" ? "card-red" : row[1] === "黃燈" ? "card-yellow" : "card-green";
-                const card = document.createElement('div');
-                card.className = `history-card ${cardClass}`;
-                
-                // row[2] 裡面現在可能包含 <img src="..."> 的 HTML，直接顯示即可
-                card.innerHTML = `
-                    <div class="history-time">${timeStr}</div>
-                    <div class="history-mood">${row[1]}</div>
-                    <div class="history-text">${row[2]}</div>
-                    <button class="delete-btn" onclick="deleteHistory('${row[0]}', this)">刪除</button>
-                `;
+                const card = document.createElement('div'); card.className = `history-card ${cardClass}`;
+                card.innerHTML = `<div class="history-time">${timeStr}</div><div class="history-mood">${row[1]}</div><div class="history-text">${row[2]}</div><button class="delete-btn" onclick="deleteHistory('${row[0]}', this)">刪除</button>`;
                 container.appendChild(card);
             });
         }).catch(err => { loader.style.display = 'none'; container.innerHTML = "<p>讀取失敗</p>"; });
     }
 
     function deleteHistory(timeStr, btn) {
-        if(!confirm("確定刪除？")) return;
-        btn.innerText = "...";
+        if(!confirm("確定刪除？")) return; btn.innerText = "...";
         const data = { action: 'delete', time: timeStr };
         fetch(GOOGLE_SCRIPT_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) })
-        .then(() => { 
-            const card = btn.parentElement;
-            card.style.opacity = '0';
-            setTimeout(() => card.remove(), 300);
+        .then(() => { const card = btn.parentElement; card.style.opacity = '0'; setTimeout(() => card.remove(), 300); cachedData = []; });
+    }
+
+    // === 心情月曆功能 (New!) ===
+    function loadCalendar() {
+        navigate('#screen-calendar');
+        renderCalendar();
+        
+        // 只有當沒有資料時才去抓
+        if(cachedData.length === 0) {
+            document.getElementById('cal-loader').style.display = 'block';
+            fetch(GOOGLE_SCRIPT_URL).then(res => res.json()).then(data => {
+                document.getElementById('cal-loader').style.display = 'none';
+                cachedData = data;
+                renderCalendar(); // 資料回來後重新渲染
+            });
+        }
+    }
+
+    function changeMonth(delta) {
+        currentCalDate.setMonth(currentCalDate.getMonth() + delta);
+        renderCalendar();
+    }
+
+    function renderCalendar() {
+        const year = currentCalDate.getFullYear();
+        const month = currentCalDate.getMonth();
+        
+        // 更新標題
+        document.getElementById('cal-month-title').innerText = `${year}年 ${month + 1}月`;
+        
+        // 計算該月天數
+        const firstDay = new Date(year, month, 1).getDay(); // 這個月第一天是星期幾
+        const daysInMonth = new Date(year, month + 1, 0).getDate(); // 這個月有幾天
+        
+        const calDays = document.getElementById('cal-days');
+        calDays.innerHTML = "";
+        
+        // 整理數據：把資料按日期分類
+        // mapping: { "2024-1-5": ["紅燈", "綠燈"] }
+        let moodMap = {};
+        let stats = { "紅燈": 0, "黃燈": 0, "綠燈": 0 };
+
+        cachedData.forEach(row => {
+            let d = new Date(row[0]);
+            // 只處理當前月份的資料
+            if(d.getFullYear() === year && d.getMonth() === month) {
+                let dateKey = d.getDate(); // 1, 2, 3...
+                if(!moodMap[dateKey]) moodMap[dateKey] = [];
+                moodMap[dateKey].push(row[1]);
+                
+                // 統計
+                if(stats[row[1]] !== undefined) stats[row[1]]++;
+            }
         });
+
+        // 更新下方統計數字
+        document.getElementById('stat-red').innerText = stats["紅燈"];
+        document.getElementById('stat-yellow').innerText = stats["黃燈"];
+        document.getElementById('stat-green').innerText = stats["綠燈"];
+
+        // 填補前面的空白
+        for(let i=0; i<firstDay; i++) {
+            const emptyCell = document.createElement('div');
+            calDays.appendChild(emptyCell);
+        }
+
+        // 產生日期格子
+        for(let i=1; i<=daysInMonth; i++) {
+            const cell = document.createElement('div');
+            cell.className = "cal-day";
+            cell.innerText = i;
+            
+            // 該日期有心情紀錄嗎？
+            if(moodMap[i]) {
+                const dotsContainer = document.createElement('div');
+                dotsContainer.className = "cal-dots";
+                
+                // 顯示小圓點 (最多顯示3個，避免太擠)
+                moodMap[i].forEach(mood => {
+                    const dot = document.createElement('div');
+                    dot.className = "dot " + (mood==="紅燈"?"dot-r": mood==="黃燈"?"dot-y":"dot-g");
+                    dotsContainer.appendChild(dot);
+                });
+                cell.appendChild(dotsContainer);
+            }
+            calDays.appendChild(cell);
+        }
     }
 </script>
 
